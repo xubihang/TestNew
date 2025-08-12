@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import readline from 'node:readline';
+import readline from 'readline';
 
 const app = express();
 app.use(cors());
@@ -58,7 +58,7 @@ app.get('/api/messages', authMiddleware, (req, res) => {
   res.json({ data, page, total: userMessages.length });
 });
 
-app.post('/api/messages', authMiddleware, (req, res) => {
+app.post('/api/messages', authMiddleware, async (req, res) => {
   const { type = 'text', content } = req.body;
   if (!content) {
     return res.status(400).json({ error: 'Message required' });
@@ -73,28 +73,43 @@ app.post('/api/messages', authMiddleware, (req, res) => {
     timestamp: Date.now(),
   };
   userMessages.push(userMessage);
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
 
-  rl.question('请输入 JSON：', (input) => {
-    try {
-      const data = JSON.parse(input);
-      const botMessage = {
-        ...data,
-        id: userMessages.length + 1,
-        role: 'bot',
-        timestamp: Date.now(),
-      };
-      userMessages.push(botMessage);
-      res.json({ message: botMessage });
-    } catch (err) {
+  const askJson = () =>
+    new Promise((resolve, reject) => {
+      const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout,
+      });
+      const timer = setTimeout(() => {
+        rl.close();
+        reject(new Error('timeout'));
+      }, 30000);
+      rl.question('请输入 JSON：', (answer) => {
+        clearTimeout(timer);
+        rl.close();
+        resolve(answer);
+      });
+    });
+
+  try {
+    const input = await askJson();
+    const payload = JSON.parse(input);
+    const botMessage = {
+      id: userMessages.length + 1,
+      role: 'bot',
+      type: payload.type || 'text',
+      content: payload.content,
+      timestamp: Date.now(),
+    };
+    userMessages.push(botMessage);
+    res.json({ message: botMessage });
+  } catch (err) {
+    if (err.message === 'timeout') {
+      res.status(408).json({ error: 'Timeout waiting for input' });
+    } else {
       res.status(400).json({ error: 'Invalid JSON' });
-    } finally {
-      rl.close();
     }
-  });
+  }
 });
 
 const port = process.env.PORT || 3001;
