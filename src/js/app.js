@@ -51,7 +51,6 @@ async function loadMessages(page) {
     loadMoreBtn.style.display = 'block';
   }
 }
-
 function resetInput() {
   messageInput.value = '';
   messageInput.style.height = 'auto';
@@ -116,5 +115,4 @@ window.addEventListener('resize', () => {
 autoResizeTextarea(messageInput, sendBtn);
 toggleSendButton(messageInput, sendBtn, inputContainer);
 updateSendButtonPosition(messageInput, sendBtn);
-
 init();
