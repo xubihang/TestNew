@@ -1,16 +1,56 @@
 import { autoResizeTextarea, toggleSendButton, appendUserMessage, appendBotMessage, showLoading, hideLoading, updateSendButtonPosition } from './ui.js';
-import { sendMessage } from './chatService.js';
+import { register, login, fetchMessages, sendMessage } from './chatService.js';
 
 const messageInput = document.querySelector('.message-input');
 const sendBtn = document.querySelector('.send-btn');
 const inputContainer = document.querySelector('.input-container');
 const messagesContainer = document.querySelector('.messages-container');
+const loadMoreBtn = document.querySelector('.load-more');
+loadMoreBtn.style.display = 'none';
 
 const state = {
   messages: [],
-  loading: false
+  loading: false,
+  page: 1,
+  total: 0
 };
 
+async function init() {
+  let result = await register('demo', 'password');
+  if (result.error) {
+    if (result.error === 'User exists') {
+      result = await login('demo', 'password');
+    }
+  }
+  if (result.error) {
+    appendBotMessage(messagesContainer, `登录失败：${result.error}`);
+    return;
+  }
+  await loadMessages(state.page);
+}
+
+async function loadMessages(page) {
+  const result = await fetchMessages(page);
+  if (result.error) {
+    appendBotMessage(messagesContainer, `加载失败：${result.error}`);
+    return;
+  }
+  const list = result.data.data || [];
+  state.total = result.data.total || 0;
+  list.forEach(msg => {
+    state.messages.push(msg);
+    if (msg.role === 'user') {
+      appendUserMessage(messagesContainer, msg.content);
+    } else {
+      appendBotMessage(messagesContainer, msg.content);
+    }
+  });
+  if (state.messages.length >= state.total) {
+    loadMoreBtn.style.display = 'none';
+  } else {
+    loadMoreBtn.style.display = 'block';
+  }
+}
 function resetInput() {
   messageInput.value = '';
   messageInput.style.height = 'auto';
@@ -63,6 +103,11 @@ messageInput.addEventListener('keypress', (e) => {
   }
 });
 
+loadMoreBtn.addEventListener('click', () => {
+  state.page += 1;
+  loadMessages(state.page);
+});
+
 window.addEventListener('resize', () => {
   updateSendButtonPosition(messageInput, sendBtn);
 });
@@ -70,3 +115,4 @@ window.addEventListener('resize', () => {
 autoResizeTextarea(messageInput, sendBtn);
 toggleSendButton(messageInput, sendBtn, inputContainer);
 updateSendButtonPosition(messageInput, sendBtn);
+init();

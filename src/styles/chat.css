@@ -197,3 +197,12 @@
             .message-card { max-width: 90%; }
         }
         @keyframes messageSlide { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: translateY(0);} }
+
+        .load-more {
+            margin: 8px auto;
+            padding: 4px 8px;
+            background: #f3f4f6;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
