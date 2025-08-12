@@ -1,0 +1,208 @@
+        @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #f8f9fa; height: 100vh; overflow: hidden;
+        }
+        .chat-container { display: flex; height: 100vh; max-width: 1200px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); overflow: hidden; border: 1px solid rgba(0,0,0,0.06); }
+        .sidebar { display: none; }
+        .main-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 12px 16px;
+            background: white; border-bottom: 1px solid rgba(0,0,0,0.08);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .header-info { display: flex; align-items: center; }
+        .header-avatar { width: 36px; height: 36px; border-radius: 50%; margin-right: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
+        .header-details h3 { font-size: 16px; font-weight: 600; color: #1a1a1a; margin-bottom: 2px; }
+        .header-details { display: flex; flex-direction: column; align-items: flex-start; }
+        .header-status { font-size: 12px; font-weight: 400; color: #6b7280; }
+        .header-actions { display: none; }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            min-width: 0;
+        }
+        .message-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 0;
+            max-width: 100%;
+        }
+        .message-group.sent { align-items: flex-end; }
+        .message-group.received { align-items: flex-start; }
+        .message {
+            max-width: 70%;
+            padding: 14px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.4;
+            position: relative;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            animation: messageSlide 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+        .message.sent { background: #3b82f6; color: white; border-bottom-right-radius: 6px; }
+        .message.received { background: white; color: #333; border-bottom-left-radius: 6px; border: 1px solid rgba(0,0,0,0.08); }
+        .message-time { font-size: 11px; font-weight: 500; opacity: 0.6; margin-top: 4px; text-align: right; }
+        .message.received .message-time { text-align: left; }
+
+        .message-card, .as-received-card {
+            display: block;
+            max-width: 75%;
+            background: white;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,0,0,0.08);
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+        .message-card img, .as-received-card img {
+            display: block; width: 100%; height: auto;
+        }
+        .card-content { padding: 16px 20px; }
+        .card-title { font-size: 15px; font-weight: 600; color: #1a1a1a; margin-bottom: 6px; }
+        .card-description { font-size: 13px; font-weight: 400; color: #666; line-height: 1.4; margin-bottom: 12px; }
+        .card-link { font-size: 12px; font-weight: 500; color: #3b82f6; text-decoration: none; }
+
+        .document-message.as-received-card {
+            display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+        }
+        .doc-icon { width: 40px; height: 40px; border-radius: 8px; background: #ef4444; color: white; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; }
+        .doc-info { flex: 1; }
+        .doc-name { font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 2px; }
+        .doc-size { font-size: 12px; font-weight: 400; color: #666; }
+
+        .audio-message.as-received-card {
+            display: flex; align-items: center; gap: 12px; min-width: 260px;
+        }
+        .play-btn { width: 32px; height: 32px; border: none; border-radius: 50%; background: #3b82f6; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; }
+        .audio-progress { flex: 1; height: 4px; background: rgba(0,0,0,0.1); border-radius: 2px; overflow: hidden; }
+        .progress-bar { width: 30%; height: 100%; background: #3b82f6; }
+        .audio-duration { font-size: 12px; font-weight: 500; color: #3b82f6; }
+
+        .emoji-message { font-size: 48px; text-align: center; padding: 20px; background: transparent; box-shadow: none; }
+
+        .input-area {
+            padding: 10px 24px 20px 24px;
+            background: white;
+            border-top: none;
+            position: relative;
+        }
+        .input-area::before {
+            content: "";
+            position: absolute;
+            top: -18px;
+            left: 0;
+            right: 0;
+            height: 18px;
+            pointer-events: none;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.85) 60%, #fff 100%);
+        }
+        .input-container {
+            display: flex;
+            align-items: flex-end;
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 10px 14px;
+            border: 1px solid rgba(0,0,0,0.06);
+            width: 100%;
+            box-shadow: 0 10px 24px rgba(0,0,0,0.06), 0 0 0 10px rgba(255,255,255,0.9);
+            position: relative;
+            transition: padding-right 0.2s ease;
+        }
+
+        .input-container.has-send-btn {
+            padding-right: 80px;
+        }
+
+        .message-input {
+            flex: 1;
+            border: none;
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 400;
+            color: #333;
+            resize: none;
+            min-height: 20px;
+            max-height: none;
+            font-family: inherit;
+            line-height: 1.5;
+            overflow-y: hidden;
+            transition: height 220ms ease;
+            will-change: height;
+        }
+        .message-input:focus { outline: none; }
+
+        .send-btn {
+            position: absolute;
+            right: 10px;
+            width: 60px;
+            height: 32px;
+            border: none;
+            border-radius: 16px;
+            background: #3b82f6;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: scale(0.8);
+            pointer-events: none;
+            box-shadow: 0 1px 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .send-btn.visible {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+
+        .send-btn:hover {
+            background: #2563eb;
+            transform: scale(1.05);
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: rgba(59,130,246,0.2); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(59,130,246,0.3); }
+        @media (max-width: 768px) {
+            .message { max-width: 85%; }
+            .message-card { max-width: 90%; }
+        }
+        @keyframes messageSlide { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: translateY(0);} }
+
+        .load-more {
+            margin: 8px auto;
+            padding: 4px 8px;
+            background: #f3f4f6;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
