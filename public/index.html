@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>现代对话应用（详情页优化版）</title>
+    <link rel="stylesheet" href="../src/styles/chat.css" />
+</head>
+<body>
+    <div class="chat-container">
+        <div class="sidebar"></div>
+        <div class="main-chat">
+            <div class="chat-header">
+                <div class="header-info">
+                    <img class="header-avatar" src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face" alt="Sarah">
+                    <div class="header-details">
+                        <h3>Sarah Chen</h3>
+                        <div class="header-status">辅助说明信息</div>
+                    </div>
+                </div>
+            </div>
+            <div class="messages-container">
+                <button class="load-more" type="button">加载更多</button>
+            </div>
+            <div class="input-area">
+                <div class="input-container">
+                    <textarea class="message-input" placeholder="输入消息..." rows="1"></textarea>
+                    <button class="send-btn">发送</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="../src/js/app.js"></script>
+</body>
+</html>
