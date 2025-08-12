@@ -57,10 +57,11 @@ export async function fetchMessages(page = 1, limit = 20, timeout) {
   return result;
 }
 
-export async function sendMessage(message, timeout = 10000) {
-  const result = await request('/messages', { method: 'POST', body: { message }, timeout });
-  if (result.data && typeof result.data.reply === 'string') {
-    return { data: result.data.reply };
+export async function sendMessage(message, timeout = 30000) {
+  const body = typeof message === 'string' ? { type: 'text', content: message } : message;
+  const result = await request('/messages', { method: 'POST', body, timeout });
+  if (result.data && result.data.message) {
+    return { data: result.data.message };
   }
   return result;
 }
