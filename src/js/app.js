@@ -1,4 +1,4 @@
-import { autoResizeTextarea, toggleSendButton, appendUserMessage, appendBotMessage, showLoading, hideLoading, updateSendButtonPosition } from './ui.js';
+import { autoResizeTextarea, toggleSendButton, appendBotMessage, showLoading, hideLoading, updateSendButtonPosition, appendMessage } from './ui.js';
 import { register, login, fetchMessages, sendMessage } from './chatService.js';
 
 const messageInput = document.querySelector('.message-input');
@@ -39,11 +39,7 @@ async function loadMessages(page) {
   state.total = result.data.total || 0;
   list.forEach(msg => {
     state.messages.push(msg);
-    if (msg.role === 'user') {
-      appendUserMessage(messagesContainer, msg.content);
-    } else {
-      appendBotMessage(messagesContainer, msg.content);
-    }
+    appendMessage(messagesContainer, msg);
   });
   if (state.messages.length >= state.total) {
     loadMoreBtn.style.display = 'none';
@@ -62,8 +58,9 @@ async function handleSend() {
   const text = messageInput.value.trim();
   if (!text) return;
 
-  state.messages.push({ role: 'user', content: text });
-  appendUserMessage(messagesContainer, text);
+  const userMsg = { role: 'user', type: 'text', content: text };
+  state.messages.push(userMsg);
+  appendMessage(messagesContainer, userMsg);
   resetInput();
 
   state.loading = true;
@@ -76,8 +73,8 @@ async function handleSend() {
   if (result.error) {
     appendBotMessage(messagesContainer, `错误：${result.error}`);
   } else {
-    state.messages.push({ role: 'bot', content: result.data });
-    appendBotMessage(messagesContainer, result.data);
+    state.messages.push(result.data);
+    appendMessage(messagesContainer, result.data);
   }
 }
 

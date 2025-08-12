@@ -76,6 +76,117 @@ export function appendBotMessage(container, text) {
   container.scrollTop = container.scrollHeight;
 }
 
+function createLinkCard(data) {
+  const card = document.createElement('a');
+  card.className = 'message-card';
+  card.href = data.url;
+  card.target = '_blank';
+  if (data.ext) {
+    card.dataset.ext = JSON.stringify(data.ext);
+  }
+
+  if (data.thumbnail) {
+    const img = document.createElement('img');
+    img.src = data.thumbnail;
+    img.alt = data.title || '';
+    card.appendChild(img);
+  }
+
+  const content = document.createElement('div');
+  content.className = 'card-content';
+
+  if (data.title) {
+    const title = document.createElement('div');
+    title.className = 'card-title';
+    title.textContent = data.title;
+    content.appendChild(title);
+  }
+  if (data.description) {
+    const desc = document.createElement('div');
+    desc.className = 'card-description';
+    desc.textContent = data.description;
+    content.appendChild(desc);
+  }
+  const link = document.createElement('div');
+  link.className = 'card-link';
+  link.textContent = data.url;
+  content.appendChild(link);
+
+  card.appendChild(content);
+  return card;
+}
+
+function createImageCard(data) {
+  const card = document.createElement('div');
+  card.className = 'message-card';
+  const img = document.createElement('img');
+  img.src = data.url;
+  img.alt = data.alt || '';
+  card.appendChild(img);
+  if (data.title || data.description) {
+    const content = document.createElement('div');
+    content.className = 'card-content';
+    if (data.title) {
+      const title = document.createElement('div');
+      title.className = 'card-title';
+      title.textContent = data.title;
+      content.appendChild(title);
+    }
+    if (data.description) {
+      const desc = document.createElement('div');
+      desc.className = 'card-description';
+      desc.textContent = data.description;
+      content.appendChild(desc);
+    }
+    card.appendChild(content);
+  }
+  return card;
+}
+
+function createAudioCard(data) {
+  const card = document.createElement('div');
+  card.className = 'audio-message as-received-card';
+  const audio = document.createElement('audio');
+  audio.controls = true;
+  audio.src = data.url;
+  card.appendChild(audio);
+  if (data.duration) {
+    const duration = document.createElement('div');
+    duration.className = 'audio-duration';
+    duration.textContent = `${data.duration}s`;
+    card.appendChild(duration);
+  }
+  return card;
+}
+
+export function appendMessage(container, msg) {
+  if (!msg) return;
+  if (msg.type === 'text') {
+    if (msg.role === 'user') {
+      appendUserMessage(container, msg.content);
+    } else {
+      appendBotMessage(container, msg.content);
+    }
+    return;
+  }
+
+  const messageGroup = document.createElement('div');
+  messageGroup.className = `message-group ${msg.role === 'user' ? 'sent' : 'received'}`;
+  let element;
+  if (msg.type === 'link') {
+    element = createLinkCard(msg.content);
+  } else if (msg.type === 'image') {
+    element = createImageCard(msg.content);
+  } else if (msg.type === 'audio') {
+    element = createAudioCard(msg.content);
+  }
+  if (element) {
+    messageGroup.appendChild(element);
+    container.appendChild(messageGroup);
+    container.scrollTop = container.scrollHeight;
+  }
+}
+
 let loadingGroup = null;
 export function showLoading(container) {
   if (loadingGroup) return;
