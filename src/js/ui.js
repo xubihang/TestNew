@@ -143,17 +143,28 @@ function createAudioCard(data) {
   bar.className = 'progress-bar';
   progress.appendChild(bar);
   card.appendChild(progress);
-
-  if (data.duration) {
-    const duration = document.createElement('div');
-    duration.className = 'audio-duration';
-    duration.textContent = `${data.duration}s`;
-    card.appendChild(duration);
-  }
+  const durationEl = document.createElement('div');
+  durationEl.className = 'audio-duration';
+  card.appendChild(durationEl);
 
   const audio = document.createElement('audio');
   audio.src = data.url;
   card.appendChild(audio);
+
+  const MIN_WIDTH = 60;
+  const MAX_WIDTH = 200;
+  const WIDTH_PER_SEC = 20;
+  const setVisuals = (sec) => {
+    durationEl.textContent = `${Math.round(sec)}s`;
+    const w = Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, sec * WIDTH_PER_SEC));
+    progress.style.width = `${w}px`;
+  };
+
+  if (data.duration) {
+    setVisuals(Number(data.duration));
+  } else {
+    audio.addEventListener('loadedmetadata', () => setVisuals(audio.duration));
+  }
 
   playBtn.addEventListener('click', () => {
     if (audio.paused) {

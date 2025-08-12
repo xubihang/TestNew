@@ -121,11 +121,12 @@
     font-size: 14px;
 }
 .audio-progress {
-    flex: 1;
     height: 4px;
     background: rgba(0,0,0,0.1);
     border-radius: 2px;
     overflow: hidden;
+    flex: none;
+    width: 100px;
 }
 .progress-bar {
     width: 0%;
