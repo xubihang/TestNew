@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import readline from 'node:readline';
 
 const app = express();
 app.use(cors());
@@ -72,66 +73,28 @@ app.post('/api/messages', authMiddleware, (req, res) => {
     timestamp: Date.now(),
   };
   userMessages.push(userMessage);
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
 
-  let botMessage;
-  if (type === 'text') {
-    if (content === 'link') {
-      botMessage = {
+  rl.question('请输入 JSON：', (input) => {
+    try {
+      const data = JSON.parse(input);
+      const botMessage = {
+        ...data,
         id: userMessages.length + 1,
         role: 'bot',
-        type: 'link',
-        content: {
-          title: '示例链接',
-          url: 'https://example.com',
-          description: 'Example link card',
-          thumbnail: 'https://via.placeholder.com/300',
-          ext: { note: 'sample' },
-        },
         timestamp: Date.now(),
       };
-    } else if (content === 'image') {
-      botMessage = {
-        id: userMessages.length + 1,
-        role: 'bot',
-        type: 'image',
-        content: {
-          url: 'https://via.placeholder.com/300',
-          description: '示例图片',
-        },
-        timestamp: Date.now(),
-      };
-    } else if (content === 'voice') {
-      botMessage = {
-        id: userMessages.length + 1,
-        role: 'bot',
-        type: 'audio',
-        content: {
-          url: 'https://www.w3schools.com/html/horse.mp3',
-          duration: 2,
-        },
-        timestamp: Date.now(),
-      };
-    } else {
-      botMessage = {
-        id: userMessages.length + 1,
-        role: 'bot',
-        type: 'text',
-        content: `Echo: ${content}`,
-        timestamp: Date.now(),
-      };
+      userMessages.push(botMessage);
+      res.json({ message: botMessage });
+    } catch (err) {
+      res.status(400).json({ error: 'Invalid JSON' });
+    } finally {
+      rl.close();
     }
-  } else {
-    botMessage = {
-      id: userMessages.length + 1,
-      role: 'bot',
-      type,
-      content,
-      timestamp: Date.now(),
-    };
-  }
-
-  userMessages.push(botMessage);
-  res.json({ message: botMessage });
+  });
 });
 
 const port = process.env.PORT || 3001;
