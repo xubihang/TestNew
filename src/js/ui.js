@@ -77,16 +77,15 @@ export function appendBotMessage(container, text) {
 }
 
 function createLinkCard(data) {
-  const card = document.createElement('a');
+  const card = document.createElement('div');
   card.className = 'message-card';
-  card.href = data.url;
-  card.target = '_blank';
   if (data.ext) {
     card.dataset.ext = JSON.stringify(data.ext);
   }
 
   if (data.thumbnail) {
     const img = document.createElement('img');
+    img.className = 'card-image';
     img.src = data.thumbnail;
     img.alt = data.title || '';
     card.appendChild(img);
@@ -107,9 +106,11 @@ function createLinkCard(data) {
     desc.textContent = data.description;
     content.appendChild(desc);
   }
-  const link = document.createElement('div');
+  const link = document.createElement('a');
   link.className = 'card-link';
-  link.textContent = data.url;
+  link.href = data.url;
+  link.target = '_blank';
+  link.textContent = data.linkText || '查看详情 →';
   content.appendChild(link);
 
   card.appendChild(content);
@@ -118,44 +119,75 @@ function createLinkCard(data) {
 
 function createImageCard(data) {
   const card = document.createElement('div');
-  card.className = 'message-card';
+  card.className = 'message-card image-card';
   const img = document.createElement('img');
+  img.className = 'card-image';
   img.src = data.url;
   img.alt = data.alt || '';
   card.appendChild(img);
-  if (data.title || data.description) {
-    const content = document.createElement('div');
-    content.className = 'card-content';
-    if (data.title) {
-      const title = document.createElement('div');
-      title.className = 'card-title';
-      title.textContent = data.title;
-      content.appendChild(title);
-    }
-    if (data.description) {
-      const desc = document.createElement('div');
-      desc.className = 'card-description';
-      desc.textContent = data.description;
-      content.appendChild(desc);
-    }
-    card.appendChild(content);
-  }
   return card;
 }
 
 function createAudioCard(data) {
   const card = document.createElement('div');
   card.className = 'audio-message as-received-card';
+
+  const playBtn = document.createElement('button');
+  playBtn.className = 'play-btn';
+  playBtn.textContent = '▶';
+  card.appendChild(playBtn);
+
+  const progress = document.createElement('div');
+  progress.className = 'audio-progress';
+  const bar = document.createElement('div');
+  bar.className = 'progress-bar';
+  progress.appendChild(bar);
+  card.appendChild(progress);
+  const durationEl = document.createElement('div');
+  durationEl.className = 'audio-duration';
+  card.appendChild(durationEl);
+
   const audio = document.createElement('audio');
-  audio.controls = true;
   audio.src = data.url;
   card.appendChild(audio);
+
+  const MIN_WIDTH = 60;
+  const MAX_WIDTH = 200;
+  const WIDTH_PER_SEC = 20;
+  const setVisuals = (sec) => {
+    durationEl.textContent = `${Math.round(sec)}s`;
+    const w = Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, sec * WIDTH_PER_SEC));
+    progress.style.width = `${w}px`;
+  };
+
   if (data.duration) {
-    const duration = document.createElement('div');
-    duration.className = 'audio-duration';
-    duration.textContent = `${data.duration}s`;
-    card.appendChild(duration);
+    setVisuals(Number(data.duration));
+  } else {
+    audio.addEventListener('loadedmetadata', () => setVisuals(audio.duration));
   }
+
+  playBtn.addEventListener('click', () => {
+    if (audio.paused) {
+      audio.play();
+      playBtn.textContent = '⏸';
+    } else {
+      audio.pause();
+      playBtn.textContent = '▶';
+    }
+  });
+
+  audio.addEventListener('timeupdate', () => {
+    if (audio.duration) {
+      const percent = (audio.currentTime / audio.duration) * 100;
+      bar.style.width = `${percent}%`;
+    }
+  });
+
+  audio.addEventListener('ended', () => {
+    playBtn.textContent = '▶';
+    bar.style.width = '0%';
+  });
+
   return card;
 }
 
