@@ -123,39 +123,58 @@ function createImageCard(data) {
   img.src = data.url;
   img.alt = data.alt || '';
   card.appendChild(img);
-  if (data.title || data.description) {
-    const content = document.createElement('div');
-    content.className = 'card-content';
-    if (data.title) {
-      const title = document.createElement('div');
-      title.className = 'card-title';
-      title.textContent = data.title;
-      content.appendChild(title);
-    }
-    if (data.description) {
-      const desc = document.createElement('div');
-      desc.className = 'card-description';
-      desc.textContent = data.description;
-      content.appendChild(desc);
-    }
-    card.appendChild(content);
-  }
   return card;
 }
 
 function createAudioCard(data) {
   const card = document.createElement('div');
   card.className = 'audio-message as-received-card';
-  const audio = document.createElement('audio');
-  audio.controls = true;
-  audio.src = data.url;
-  card.appendChild(audio);
+
+  const playBtn = document.createElement('button');
+  playBtn.className = 'play-btn';
+  playBtn.textContent = '▶';
+  card.appendChild(playBtn);
+
+  const progress = document.createElement('div');
+  progress.className = 'audio-progress';
+  const bar = document.createElement('div');
+  bar.className = 'progress-bar';
+  progress.appendChild(bar);
+  card.appendChild(progress);
+
   if (data.duration) {
     const duration = document.createElement('div');
     duration.className = 'audio-duration';
     duration.textContent = `${data.duration}s`;
     card.appendChild(duration);
   }
+
+  const audio = document.createElement('audio');
+  audio.src = data.url;
+  card.appendChild(audio);
+
+  playBtn.addEventListener('click', () => {
+    if (audio.paused) {
+      audio.play();
+      playBtn.textContent = '⏸';
+    } else {
+      audio.pause();
+      playBtn.textContent = '▶';
+    }
+  });
+
+  audio.addEventListener('timeupdate', () => {
+    if (audio.duration) {
+      const percent = (audio.currentTime / audio.duration) * 100;
+      bar.style.width = `${percent}%`;
+    }
+  });
+
+  audio.addEventListener('ended', () => {
+    playBtn.textContent = '▶';
+    bar.style.width = '0%';
+  });
+
   return card;
 }
 

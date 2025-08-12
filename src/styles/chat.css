@@ -94,13 +94,14 @@
         .doc-name { font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 2px; }
         .doc-size { font-size: 12px; font-weight: 400; color: #666; }
 
-        .audio-message.as-received-card {
-            display: flex; align-items: center; gap: 12px; min-width: 260px;
-        }
-        .play-btn { width: 32px; height: 32px; border: none; border-radius: 50%; background: #3b82f6; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; }
-        .audio-progress { flex: 1; height: 4px; background: rgba(0,0,0,0.1); border-radius: 2px; overflow: hidden; }
-        .progress-bar { width: 30%; height: 100%; background: #3b82f6; }
-        .audio-duration { font-size: 12px; font-weight: 500; color: #3b82f6; }
+.audio-message.as-received-card {
+    display: flex; align-items: center; gap: 12px; min-width: 260px;
+}
+.play-btn { width: 32px; height: 32px; border: none; border-radius: 50%; background: #3b82f6; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; }
+.audio-progress { flex: 1; height: 4px; background: rgba(0,0,0,0.1); border-radius: 2px; overflow: hidden; }
+.progress-bar { width: 30%; height: 100%; background: #3b82f6; }
+.audio-duration { font-size: 12px; font-weight: 500; color: #3b82f6; }
+.audio-message audio { display: none; }
 
         .emoji-message { font-size: 48px; text-align: center; padding: 20px; background: transparent; box-shadow: none; }
 
