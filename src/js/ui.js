@@ -77,16 +77,15 @@ export function appendBotMessage(container, text) {
 }
 
 function createLinkCard(data) {
-  const card = document.createElement('a');
+  const card = document.createElement('div');
   card.className = 'message-card';
-  card.href = data.url;
-  card.target = '_blank';
   if (data.ext) {
     card.dataset.ext = JSON.stringify(data.ext);
   }
 
   if (data.thumbnail) {
     const img = document.createElement('img');
+    img.className = 'card-image';
     img.src = data.thumbnail;
     img.alt = data.title || '';
     card.appendChild(img);
@@ -107,9 +106,11 @@ function createLinkCard(data) {
     desc.textContent = data.description;
     content.appendChild(desc);
   }
-  const link = document.createElement('div');
+  const link = document.createElement('a');
   link.className = 'card-link';
-  link.textContent = data.url;
+  link.href = data.url;
+  link.target = '_blank';
+  link.textContent = data.linkText || '查看详情 →';
   content.appendChild(link);
 
   card.appendChild(content);
@@ -118,8 +119,9 @@ function createLinkCard(data) {
 
 function createImageCard(data) {
   const card = document.createElement('div');
-  card.className = 'message-card';
+  card.className = 'message-card image-card';
   const img = document.createElement('img');
+  img.className = 'card-image';
   img.src = data.url;
   img.alt = data.alt || '';
   card.appendChild(img);
