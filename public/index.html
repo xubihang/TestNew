@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>现代对话应用（详情页优化版）</title>
+    <link rel="stylesheet" href="../src/styles/chat.css" />
+</head>
+<body>
+    <div class="chat-container">
+        <div class="sidebar"></div>
+        <div class="main-chat">
+            <div class="chat-header">
+                <div class="header-info">
+                    <img class="header-avatar" src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face" alt="Sarah">
+                    <div class="header-details">
+                        <h3>Sarah Chen</h3>
+                        <div class="header-status">辅助说明信息</div>
+                    </div>
+                </div>
+            </div>
+            <div class="messages-container">
+                <div class="message-group received">
+                    <div class="message received">
+                        嗨！你今天怎么样？准备好明天的会议了吗？
+                        <div class="message-time">上午 10:30</div>
+                    </div>
+                </div>
+                <div class="message-group sent">
+                    <div class="message sent">
+                        很好！是的，我已经准备好了所有的材料。你看过我发的文档了吗？
+                        <div class="message-time">上午 10:32</div>
+                    </div>
+                </div>
+                <div class="message-group received">
+                    <div class="document-message as-received-card">
+                        <div class="doc-icon">📄</div>
+                        <div class="doc-info">
+                            <div class="doc-name">项目提案.pdf</div>
+                            <div class="doc-size">2.4 MB</div>
+                        </div>
+                    </div>
+                    <div class="message-time">上午 10:35</div>
+                </div>
+                <div class="message-group sent">
+                    <div class="message sent">
+                        完美！我觉得这个提案很棒 👍
+                        <div class="message-time">上午 10:36</div>
+                    </div>
+                </div>
+                <div class="message-group received">
+                    <div class="message-card">
+                        <img class="card-image" src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=200&fit=crop" alt="办公室">
+                        <div class="card-content">
+                            <div class="card-title">现代办公空间设计</div>
+                            <div class="card-description">这是我们新办公室的设计方案，融合了现代简约和舒适实用的理念...</div>
+                            <a href="#" class="card-link">查看详情 →</a>
+                        </div>
+                    </div>
+                    <div class="message-time">上午 10:40</div>
+                </div>
+                <div class="message-group sent">
+                    <div class="emoji-message">🎉</div>
+                    <div class="message-time">上午 10:41</div>
+                </div>
+                <div class="message-group received">
+                    <div class="audio-message as-received-card">
+                        <button class="play-btn">▶️</button>
+                        <div class="audio-progress"><div class="progress-bar"></div></div>
+                        <div class="audio-duration">0:45</div>
+                    </div>
+                    <div class="message-time">上午 10:45</div>
+                </div>
+                <div class="message-group sent">
+                    <div class="message sent">
+                        听起来很棒！我们明天详细讨论一下实施计划吧
+                        <div class="message-time">刚刚</div>
+                    </div>
+                </div>
+            </div>
+            <div class="input-area">
+                <div class="input-container">
+                    <textarea class="message-input" placeholder="输入消息..." rows="1"></textarea>
+                    <button class="send-btn">发送</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="../src/js/app.js"></script>
+</body>
+</html>
